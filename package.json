@@ -1,9 +1,9 @@
 {
   "name": "swagger-i18n-extension",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Extension for swagger that allows build swagger file for specified language.",
   "bin": {
-    "swagger-i18n": "bin/swagger-i18n-extension"
+    "swagger-i18n-extension": "bin/swagger-i18n-extension"
   },
   "main": "index",
   "files": [

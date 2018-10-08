@@ -58,7 +58,6 @@ List of exported functions:
 ### translate
 Translates swagger object into specified language.
 
-**Arguments**:
 | Argument | Type   | Description                                 |
 |----------|--------|---------------------------------------------|
 | object   | object | Swagger raw object after parse yaml or json |
@@ -70,7 +69,6 @@ Translated swagger `object`
 ### getUsedLanguageCodes
 Returns list of used ISO6392B language codes
 
-**Arguments**:
 | Argument | Type   | Description                                 |
 |----------|--------|---------------------------------------------|
 | object   | object | Swagger raw object after parse yaml or json |
