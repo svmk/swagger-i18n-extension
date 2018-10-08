@@ -1,0 +1,141 @@
+#!/usr/bin/env node
+const process = require('process');
+const iso6392Codes = require('iso-639-2');
+const yargs = require('yargs');
+const swaggerI18nExtension = require('../index');
+const fs = require('fs');
+const pathutils = require('path');
+const YAML = require('yaml')
+
+function formats() {
+    return ['yaml', 'yml', 'json']
+}
+
+function loadFromFile(path, format) {
+    if (format === undefined || format === true) {
+        format = pathutils.extname(path)
+        if (typeof format === 'string') {
+            format = format.substring(1)
+        }
+    }
+    if (formats().indexOf(format) < 0) {
+        console.error('Unknown input format: ' + format + ' Possible values: ' + formats().join(','))
+        process.exit(1);
+    }
+    let content = fs.readFileSync(path, 'utf8');
+    if (format === 'json') {
+        return JSON.parse(content)
+    }
+    return YAML.parse(content);
+}
+
+function encodeResult(result, format) {
+    if (format === undefined) {
+        format = 'yaml'
+    }
+    if (format === 'yaml' || format === 'yml') {
+        return YAML.stringify(result)
+    } else if (format === 'json') {
+        return JSON.stringify(result)
+    }
+    console.error('Unknown output format: ' + format)
+    process.exit(1)
+}
+
+function describeInputFile(yargs) {
+    yargs.positional('path', {
+        describe: 'Path to swagger file'
+    });
+    yargs.option('format', {
+        describe: 'Possible format file: ' + formats().join(',')
+    })
+}
+
+let commands = yargs
+    .usage('Usage: $0 <command> [options]')
+    .help('help')
+    .alias('h', 'help')
+    .showHelpOnFail(true)
+    .demandCommand()
+    .recommendCommands()
+    .strict()
+    .command(
+        'lang-list <path>',
+        'Print list of all languages described within swagger file',
+        describeInputFile,
+        (argv) => {
+            let swaggerSpec = loadFromFile(argv.path, argv.format);
+            let languageCodes = swaggerI18nExtension.getUsedLanguageCodes(swaggerSpec);
+            languageCodes.forEach(function (languageCode) {
+                process.stdout.write(languageCode + "\n")
+            });
+            if (languageCodes.length === 0) {
+                process.stderr.write("There is no translations\n")
+            }
+        }
+    ).command(
+        'lang-list-all',
+        'Print list of all supported languages',
+        () => {},
+        (argv) => {
+            iso6392Codes.forEach((record) => {
+                process.stdout.write(record.iso6392B + " " + record.name + "\n")
+            })
+        }
+    ).command(
+        'translate <path> <lang>',
+        'Translates swagger file into specified language',
+        (yargs) => {
+            describeInputFile(yargs);
+            yargs.positional('lang', {
+                describe: 'Language code'
+            });
+        },
+        (argv) => {
+            let swaggerSpec = loadFromFile(argv.path, argv.format);
+            swaggerSpec = swaggerI18nExtension.translate(swaggerSpec, argv.lang);
+            let content = encodeResult(swaggerSpec, argv.format)
+            process.stdout.write(content + "\n")
+        }
+    ).command(
+        'translate-all <path>',
+        'Translates swagger file into all declared languages',
+        (yargs) => {
+            describeInputFile(yargs);
+            yargs.option('output-directory', {
+                describe: 'Output directory for compiled swagger files. By default directory of swagger file.'
+            })
+        },
+        (argv) => {
+            let path = pathutils.resolve(argv.path);
+            let outputFileExt = pathutils.extname(path);
+            let outputFileName = pathutils.basename(path, outputFileExt);
+            let swaggerSpec = loadFromFile(path, argv.format);
+            let languageCodes = swaggerI18nExtension.getUsedLanguageCodes(swaggerSpec);
+            let outputDirectory = argv.outputDirectory;
+            if (outputDirectory === undefined) {
+                outputDirectory = pathutils.dirname(path)
+            }
+            languageCodes.forEach((languageCode) => {
+                let swaggerTranslatedSpec = swaggerI18nExtension.translate(swaggerSpec, languageCode);
+                let result = encodeResult(swaggerTranslatedSpec, argv.format);
+                let outputPath = pathutils.join(outputDirectory, outputFileName + "." + languageCode + outputFileExt);
+                fs.writeFileSync(outputPath, result);
+            });
+        }
+    ).command(
+        'validate <path>',
+        'Validates swagger i18n-extension.',
+        describeInputFile,
+        (argv) => {
+            let swaggerSpec = loadFromFile(argv.path, argv.format);
+            try {
+                swaggerI18nExtension.validate(swaggerSpec, true);
+                process.stdout.write("Valid\n")
+            } catch (e) {
+                console.error('Invalid: ' + e.toString())
+                process.exit(1);
+            }
+        }
+    );
+let _ = commands.argv;
