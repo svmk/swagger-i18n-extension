@@ -1,13 +1,14 @@
 {
   "name": "swagger-i18n-extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Extension for swagger that allows build swagger file for specified language.",
   "bin": {
     "swagger-i18n": "bin/swagger-i18n-extension"
   },
   "main": "index",
   "files": [
-    "index.js"
+    "index.js",
+    "bin/swagger-i18n-extension"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
