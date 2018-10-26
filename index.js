@@ -15,14 +15,14 @@ function validateLanguageCode(language) {
         }
     });
     if (!wasFound) {
-        throw new Error('Invalid language code ' + language + " Available: " + availableCodes.join(','))
+        throw new Error('Invalid language code `' + language + "` Available: `" + availableCodes.join(',') + '`')
     }
 }
 
 
 function translate(object, language) {
     if (typeof(object) !== 'object') {
-        throw new Error('Passed swagger schema must be object. Not ' + typeof(object))
+        throw new Error('Passed swagger schema must be object. Not `' + typeof(object) + '`')
     }
     object = Object.assign({}, object)
     validateLanguageCode(language)
@@ -32,16 +32,16 @@ function translate(object, language) {
             if (matches) {
                 var fieldName = matches[1];
                 if (typeof(subject[fieldName]) !== 'string') {
-                    throw new Error('Field ' + fieldName + ' at ' + path + ' must be filled and being string')
+                    throw new Error('Field `' + fieldName + '` at `' + path + '` must be filled and being string')
                 }
                 if (typeof(value) !== 'object') {
-                    throw new Error('Field ' + path + ' must be object')
+                    throw new Error('Field `' + path + '` must be object')
                 }
                 if (typeof(value[language]) === 'undefined') {
-                    throw new Error('Field ' + path + ' does not contain language translation ' + language)
+                    throw new Error('Field `' + path + '` does not contain language translation `' + language + '`')
                 }
                 if (typeof(value[language]) !== 'string') {
-                    throw new Error('Field at ' + path + '.' + language + ' must be string ')
+                    throw new Error('Field at `' + path + '.' + language + '` must be string ')
                 }
                 subject[fieldName] = value[language]
                 delete subject[key]
@@ -53,7 +53,7 @@ function translate(object, language) {
 
 function getUsedLanguageCodes(object) {
     if (typeof(object) !== 'object') {
-        throw new Error('Passed swagger schema must be object. Not ' + typeof(object))
+        throw new Error('Passed swagger schema must be object. Not `' + typeof(object) + '`')
     }
     var result = [];
     iterator(object, function (value, key, subject, path) {
@@ -61,7 +61,7 @@ function getUsedLanguageCodes(object) {
             var matches = regexp.exec(key);
             if (matches) {
                 if (typeof(value) !== 'object') {
-                    throw new Error('Field ' + path + ' must be object')
+                    throw new Error('Field `' + path + '` must be object')
                 }
                 result = result.concat(Object.keys(value))
                 result = result.filter(function(value, index, self) {return self.indexOf(value) === index;})
