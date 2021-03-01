@@ -1,6 +1,6 @@
 {
   "name": "swagger-i18n-extension",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Extension for swagger that allows build swagger file for specified language.",
   "bin": {
     "swagger-i18n-extension": "bin/swagger-i18n-extension"
@@ -28,9 +28,9 @@
   },
   "homepage": "https://github.com/svmk/swagger-i18n-extension#readme",
   "dependencies": {
-    "deep-for-each": "^2.0.3",
-    "iso-639-2": "^1.1.0",
-    "yaml": "^1.0.0",
-    "yargs": "^12.0.2"
+    "deep-for-each": "3.0",
+    "iso-639-2": "2.0",
+    "yaml": "1.10",
+    "yargs": "16.0"
   }
 }
