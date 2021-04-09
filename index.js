@@ -26,7 +26,7 @@ function translate(object, language) {
     }
     let translatedSpec = JSON.parse(JSON.stringify(object))
     validateLanguageCode(language)
-    iterator(object, function (value, key, subject, path) {
+    iterator(translatedSpec, function (value, key, subject, path) {
         if (typeof(key) === 'string') {
             var matches = regexp.exec(key);
             if (matches) {
