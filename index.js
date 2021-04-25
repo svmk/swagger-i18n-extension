@@ -24,9 +24,9 @@ function translate(object, language) {
     if (typeof(object) !== 'object') {
         throw new Error('Passed swagger schema must be object. Not `' + typeof(object) + '`')
     }
-    object = Object.assign({}, object)
+    let translatedSpec = JSON.parse(JSON.stringify(object))
     validateLanguageCode(language)
-    iterator(object, function (value, key, subject, path) {
+    iterator(translatedSpec, function (value, key, subject, path) {
         if (typeof(key) === 'string') {
             var matches = regexp.exec(key);
             if (matches) {
@@ -48,7 +48,7 @@ function translate(object, language) {
             }
         }
     });
-    return object
+    return translatedSpec
 }
 
 function getUsedLanguageCodes(object) {
