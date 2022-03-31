@@ -137,5 +137,20 @@ let commands = yargs
                 process.exit(1);
             }
         }
+    ).command(
+        'strip <path>',
+        'Strips x-FIELDNAME-i18n tags from spec flie',
+        describeInputFile,
+        (argv) => {
+            const swaggerSpec = loadFromFile(argv.path, argv.format);
+            try {
+                const strippedSpec = swaggerI18nExtension.strip(swaggerSpec);
+                const content = encodeResult(strippedSpec, argv.format)
+                process.stdout.write(content + "\n")
+            } catch (e) {
+                console.error('Invalid: ' + e.toString())
+                process.exit(1);
+            }
+        }
     );
 let _ = commands.argv;

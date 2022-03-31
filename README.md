@@ -3,14 +3,14 @@ Swagger i18n extension
 
 Compiles swagger file into specified language:
 
-```
+```shell
 npm install swagger-i18n-extension
 ```
 
 To use this extension you need to specify vendor attribute `x-*-i18n` with translations object.
 Example:
 
-```
+```yml
 openapi: 3.0.0
 info:
   version: 0.0.2
@@ -23,7 +23,7 @@ info:
 ```
 
 This swagger yaml will be translated into:
-```
+```yml
 openapi: 3.0.0
 info:
   version: 0.0.2
@@ -33,7 +33,7 @@ info:
 
 ## Cli tool
 
-```
+```shell
 $ swagger-i18n-extension
 Usage: swagger-i18n-extension <command> [options]
 
@@ -43,6 +43,7 @@ Commands:
   swagger-i18n-extension translate <path> <lang>  Translates swagger file into specified language
   swagger-i18n-extension translate-all <path>     Translates swagger file into all declared languages
   swagger-i18n-extension validate <path>          Validates swagger i18n-extension.
+  swagger-i18n-extension strip <path>             Strips x-FIELDNAME-i18n tags from spec flie
 
 Options:
   --version   Show version number                                      [boolean]

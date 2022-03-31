@@ -92,8 +92,28 @@ function validate(object, throwError) {
     return true
 }
 
+function strip(object) {
+    if (typeof(object) !== 'object') {
+        throw new Error('Passed swagger schema must be object. Not `' + typeof(object) + '`')
+    }
+    let translatedSpec = JSON.parse(JSON.stringify(object))
+    iterator(translatedSpec, function (value, key, subject, path) {
+        if (typeof(key) === 'string') {
+            var matches = regexp.exec(key);
+            
+            if (matches) {
+                // console.log("deleting ", key)
+                delete subject[key]
+                // console.log(subject, value)
+            }
+        }
+    });
+    return translatedSpec
+}
+
 module.exports = {
-    translate: translate,
-    getUsedLanguageCodes: getUsedLanguageCodes,
-    validate: validate
+    translate,
+    getUsedLanguageCodes,
+    validate,
+    strip
 }
