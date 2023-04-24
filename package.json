@@ -30,7 +30,7 @@
   "dependencies": {
     "deep-for-each": "3.0",
     "iso-639-2": "2.0",
-    "yaml": "1.10",
+    "yaml": "2.2",
     "yargs": "16.0"
   }
 }
